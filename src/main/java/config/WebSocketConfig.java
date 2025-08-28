@@ -14,7 +14,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	@Override // add the stomp registry end point and for SOCKJS fallback
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		
-		registry.addEndpoint("/ws");
+		registry.addEndpoint("/ws").setAllowedOriginPatterns("/http://localhost:5173").withSockJS(); // frontend urls
 		
 	}
 
@@ -22,7 +22,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
 		
 		registry.setApplicationDestinationPrefixes("/app"); //  any request coming with /app will be routed to the controller with same mapping
-		registry.enableSimpleBroker("/topic"); // used as a way to subscribe
+		registry.enableSimpleBroker("/topic", "/queue", "/user"); // used as a way to subscribe
+		registry.setUserDestinationPrefix("/user");
 		
 	}
 	

@@ -13,6 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import service.JwtService;
@@ -43,7 +44,23 @@ public class JwtFilter extends OncePerRequestFilter { // every incoming request 
 		
 		if(authHeader != null && authHeader.startsWith("Bearer ")) {
 			token = authHeader.substring(7); // start from index 7
+			
+			// now if the token wasnt in the header we'll check the cookies
+			if(token == null) {
+				Cookie [] cookies = request.getCookies();
+				
+				if(cookies != null) {
+					for(Cookie cookie: cookies) {
+						if("JWT".equals(cookie.getName())) {
+							token = cookie.getValue();
+						}
+					}
+				}
+			}
+			
 			username = this.jwtService.extractUsername(token);
+			
+			
 			
 			// check if the user is not null or not already authenticated
 			if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

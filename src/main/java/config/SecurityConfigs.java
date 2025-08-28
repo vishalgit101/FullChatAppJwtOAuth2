@@ -18,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import filter.JwtFilter;
 import service.MyUserDetailsService;
@@ -29,12 +30,14 @@ public class SecurityConfigs {
 	// DI
 	private final MyUserDetailsService myUserDetailsService;
 	private final JwtFilter jwtFilter;
+	private final CorsConfigurationSource corsConfigurationSource;
 	
 	@Autowired
-	public SecurityConfigs(MyUserDetailsService myUserDetailsService, JwtFilter jwtFilter) {
+	public SecurityConfigs(MyUserDetailsService myUserDetailsService, JwtFilter jwtFilter, CorsConfigurationSource corsConfigurationSource) {
 		super();
 		this.myUserDetailsService = myUserDetailsService;
 		this.jwtFilter = jwtFilter;
+		this.corsConfigurationSource = corsConfigurationSource;
 	}
 
 	// 4 step process 
@@ -47,12 +50,15 @@ public class SecurityConfigs {
 		return http.
 			//cors(Customizer.withDefaults())
 			csrf(csrf -> csrf.disable())
+			.cors(cors -> cors.configurationSource(this.corsConfigurationSource))
 			.authorizeHttpRequests(auth -> 
 					auth.requestMatchers("/hello", "/login", "/signup").permitAll()
 					.requestMatchers("/api/csrf-token").permitAll()
 					.requestMatchers("/api/admin/**").hasRole("ADMIN")
 					.requestMatchers("/api/auth/public/**").permitAll()
+					.requestMatchers("/auth/**").permitAll()
 					.requestMatchers("/oauth2").permitAll()
+					.requestMatchers("/ws/**").permitAll()
 					.anyRequest().authenticated()
 					)
 			

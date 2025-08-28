@@ -40,5 +40,17 @@ public class UserServiceImpl implements UserService {
 		return "failed";
 		
 	}
+	
+	@Override
+	public boolean userExitsByUsername(String username) {
+		return this.userRepo.existsByUsername(username);
+	}
+
+	@Override
+	public void setUserOnlineStatus(String username, boolean isOnline) {
+		
+		this.userRepo.updateUserOnlineStatus(username, isOnline);
+		
+	}
 
 }

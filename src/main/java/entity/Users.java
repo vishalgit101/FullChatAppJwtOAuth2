@@ -229,6 +229,8 @@ public class Users {
 		this.profilePicture = profilePicture;
 	}
 	
-	
+	public void addRole(Role role) {
+		this.roles.add(role);
+	}
 	
 }
