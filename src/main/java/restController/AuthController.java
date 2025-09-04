@@ -3,6 +3,9 @@ package restController;
 
 
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -95,4 +98,10 @@ public class AuthController {
 		userDTO.setUsername(user.getUsername());
 		return userDTO;
 	}
+	
+	@GetMapping("/getonlineusers")
+	public ResponseEntity<List<UserDTO>> getOnlineUsers(){
+		return ResponseEntity.ok(this.authenticationService.getOnlineUsers());
+	}
+	
 }

@@ -1,6 +1,10 @@
 package service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -137,6 +141,20 @@ public class AuthenticationService {
 		userDTO.setId(user.getId());
 		userDTO.setUsername(user.getUsername());
 		return userDTO;
+	}
+
+	// try to do the pagination here to have it return only 10-20 users at a time
+	public List<UserDTO> getOnlineUsers() {
+		List<Users> userList = this.userRepo.findByOnlineTrue();
+		
+		List<UserDTO> response = new ArrayList<UserDTO>();
+		
+		for(Users user: userList) {
+			UserDTO userDto = convertToUserDTO(user);
+			response.add(userDto);
+		}
+		
+		return response;
 	}
 
 }
